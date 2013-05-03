@@ -1,0 +1,99 @@
+import unittest
+import DaVyncy as dv
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.test1= 'O draconia;conian devil! Oh la;h lame sa;saint!'
+        self.test2 = 'm quaerat voluptatem.;pora incidunt ut labore et d;, consectetur, adipisci velit;olore magnam aliqua;idunt ut labore et dolore magn;uptatem.;i dolorem ipsum qu;iquam quaerat vol;psum quia dolor sit amet, consectetur, a;ia dolor sit amet, conse;squam est, qui do;Neque porro quisquam est, qu;aerat voluptatem.;m eius modi tem;Neque porro qui;, sed quia non numquam ei;lorem ipsum quia dolor sit amet;ctetur, adipisci velit, sed quia non numq;unt ut labore et dolore magnam aliquam qu;dipisci velit, sed quia non numqua;us modi tempora incid;Neque porro quisquam est, qui dolorem i;uam eius modi tem;pora inc;am al'
+
+    def test_finall_idx(self):
+        s1 = 'O draconia'
+        s2 = 'conia'
+        self.assertEqual(dv.findall_idx(s1,s2),[5])
+        pass
+    def test_overlap(self):
+        s1 = 'abcdcd'
+        s2 = 'cdefg'
+        self.assertEqual(dv.overlap(s1,s2), 2)
+
+        t1 = 'h lame sa'
+        t2 = 'saint!'
+        self.assertEqual(dv.overlap(t1,t2),2)
+
+    def test_reaches_end(self):
+        s1 = 'abcdcd'
+        s2 = 'cdefg'
+        pos = 4
+        self.assertTrue(dv.reaches_end(s1,s2,pos))
+        self.assertFalse(dv.reaches_end(s1,s2,3))
+
+        s3 = 'O draconia'
+        s4 = 'conian devil!'
+        self.assertTrue(dv.reaches_end(s3,s4,5))
+
+        s5 = '12345'
+        s6 = '34678'
+        self.assertFalse(dv.reaches_end(s5,s6,2))
+
+    def test_split_input(self):
+        s = 'O draconia;conian devil! Oh la;h lame sa;saint!'
+        ans = ['O draconia','conian devil! Oh la','h lame sa','saint!']
+        self.assertEqual(dv.split_input(s),ans)
+        
+
+    def test_combine(self):
+        s1 = 'h lame sa'
+        s2 = 'saint!'
+        self.assertEqual(dv.combine(s1,s2,2),'h lame saint!')
+        
+        s3 = 'O draconia'
+        s4 = 'conian devil!'
+        self.assertEqual(dv.combine(s3,s4,5),'O draconian devil!')
+
+    def test_remove(self):
+        d = {(0,1):'a', (1,2):'b',(2,3):'c'}
+        ans = {(0,1):'a',(2,3):'c'}
+        #self.assertEqual( dv.remove(d,1,0), ans)
+
+    def test_max_item(self):
+        d = {'a':1, ('c','d'):10}
+        print dv.max_item(d)
+        pass
+
+    def test_remove_fromlist(self):
+        l = ['a','a','b','c','d']
+        ans = ['b','c','d']
+        print l
+        l = dv.remove_fromlist(l,'a')
+        print l
+        l = dv.remove_fromlist(l,'b')
+        print l
+        l.append('e')
+        print l
+
+##    def test_runonce(self):
+##        lines = dv.split_input(self.test2)
+##        d = dv.create_dict(lines)
+##        print d
+##        words,value = dv.max_item(d)
+##        print words,value
+##        nw = dv.combine(words[0],words[1],value)
+##        print nw
+##        print lines
+##        olen = len(lines)
+##        lines = dv.remove_fromlist(lines,words[0])
+##        print lines
+##        nlen = len(lines)
+##        assert olen == nlen+1
+    
+    def test_solve(self):
+##        s = 'O draconia;conian devil! Oh la;h lame sa;saint!'
+##        ans = 'O draconian devil! Oh lame saint!'
+##        self.assetEqual( dv.solve(s), ans)
+
+        s2='m quaerat voluptatem.;pora incidunt ut labore et d;, consectetur, adipisci velit;olore magnam aliqua;idunt ut labore et dolore magn;uptatem.;i dolorem ipsum qu;iquam quaerat vol;psum quia dolor sit amet, consectetur, a;ia dolor sit amet, conse;squam est, qui do;Neque porro quisquam est, qu;aerat voluptatem.;m eius modi tem;Neque porro qui;, sed quia non numquam ei;lorem ipsum quia dolor sit amet;ctetur, adipisci velit, sed quia non numq;unt ut labore et dolore magnam aliquam qu;dipisci velit, sed quia non numqua;us modi tempora incid;Neque porro quisquam est, qui dolorem i;uam eius modi tem;pora inc;am al'
+        print dv.solve(s2)
+        pass
+
+if __name__ == '__main__':
+    unittest.main()

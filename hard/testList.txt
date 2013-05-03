@@ -1,0 +1,7 @@
+a
+abc
+adc
+ab
+xz
+xyz
+xa
