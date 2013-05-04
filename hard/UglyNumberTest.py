@@ -34,13 +34,8 @@ class Test(unittest.TestCase):
     def testPart(self):
         s='1234'
         uglist=UglyNumbers.part(s)
-#        print UglyNumbers.lookUp
         print UglyNumbers.countUglie(uglist)
-#        print '============'
-#        UglyNumbers.func_driver(s)
-#        print UglyNumbers.countUglie(UglyNumbers.part("011"))
-#        UglyNumbers.func_driver(s)
-#        print UglyNumbers.lookUp
+
 
         
 

@@ -37,26 +37,89 @@ def gcd(a,b):
         return a
     else: 
         return gcd(b,a%b)
-    
-class Graph:
-    def __init__(self, g):
-        self.g = g
-    def V(self):
-        return self.g.keys()
-    def Adj(self,v):
-        return self.g[v].keys()
-    def w(self,u,v):
-        return self.g[u][v]
-    def insert(self,u,v):
-        scr = score(u,v)
-        if u in self.V():
-            self.g[u][v]=scr
-            pass
-        else:
-            self.g[u]={v:scr}
-    def toString(self):
-        return self.g
 
+def parse_input(testcase):
+    cust = testcase.split(';')[0]
+    prods = testcase.split(';')[1]
+    cust = cust.split(',')
+    prods = prods.split(',')
+    assert len(cust) >0
+    assert len(prods)>0
+    return cust,prods
+
+def solve(cust,prods):
+    g = FlowNetwork()
+    g.add_vertex('s')
+    g.add_vertex('t')
+    map(g.add_vertex,cust)
+    map(g.add_vertex,prods)
+    #add source and sink
+    MAX = 10000000
+    for c in cust:
+        g.add_edge('s',c,MAX)
+    for p in prods:
+        g.add_edge(p,'t',MAX)
+    #add edges
+    for c in cust:
+        for p in prods:
+            s = score(p,c)
+            g.add_edge(c,p,s)
+            assert s > 0
+            print '{} -->{}: {}'.format(c,p,s)
+    #solve
+    print g.max_flow('s','t')
+    pass
+    
+class Edge(object):
+    def __init__(self, u, v, w):
+        self.source = u
+        self.sink = v
+        self.capacity = w
+    def __repr__(self):
+        return "%s->%s:%s" % (self.source, self.sink, self.capacity)
+ 
+class FlowNetwork(object):
+    def __init__(self):
+        self.adj = {}
+        self.flow = {}
+ 
+    def add_vertex(self, vertex):
+        self.adj[vertex] = []
+ 
+    def get_edges(self, v):
+        return self.adj[v]
+ 
+    def add_edge(self, u, v, w=0):
+        if u == v:
+            raise ValueError("u == v")
+        edge = Edge(u,v,w)
+        redge = Edge(v,u,0)
+        edge.redge = redge
+        redge.redge = edge
+        self.adj[u].append(edge)
+        self.adj[v].append(redge)
+        self.flow[edge] = 0
+        self.flow[redge] = 0
+ 
+    def find_path(self, source, sink, path):
+        if source == sink:
+            return path
+        for edge in self.get_edges(source):
+            residual = edge.capacity - self.flow[edge]
+            if residual > 0 and not (edge,residual) in path:
+                result = self.find_path( edge.sink, sink, path + [(edge,residual)] )
+                if result != None:
+                    return result
+ 
+    def max_flow(self, source, sink):
+        path = self.find_path(source, sink, [])
+        while path != None:
+            flow = min(res for edge,res in path)
+            for edge,res in path:
+                self.flow[edge] += flow
+                self.flow[edge.redge] -= flow
+            path = self.find_path(source, sink, [])
+        return sum(self.flow[edge] for edge in self.get_edges(source))
 
 
 
