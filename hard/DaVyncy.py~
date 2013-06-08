@@ -1,13 +1,19 @@
 import re
 import operator
 
-def allindices(string, sub, offset=0):
-    listindex = []
-    i = string.find(sub, offset)
-    while i >= 0:
-        listindex.append(i)
-        i = string.find(sub, i + 1)
-    return listindex
+"""
+Still takes too long. Takes about 1.2s for large input found on codeeval
+"""
+
+def findall_idx(s,pat):
+    """
+    Returns all start indices where substring pat appears in s, if at all
+    ISSUE: the string s (and pat) might contain re special characters!
+    """
+    print 'PAT',pat
+    print 'S',s,'|'
+    s = r'{}'.format(s)
+    return [m.start() for m in re.finditer(pat,s)]
 
 def reaches_end(s1,s2,pos):
     """
@@ -24,9 +30,8 @@ def overlap(s1,s2):
     Returns lenght of max overlap if we were to stitch s2 to the right of s1
     """
     #loop over s2 from left to right and check for overlap
-#    print 'OVERLAP',s1,s2
     for i in range(len(s2),0,-1):
-        idxs = allindices(s1,s2[:i])
+        idxs = findall_idx(s1,s2[:i])
         if len(idxs) == 0:
             continue
         mx = max(idxs)
@@ -41,10 +46,8 @@ def combine(s1,s2,pos):
     return s1[:-pos]+s2        
 
 def split_input(st):
-    result = []
-    for c in st.split(';'):
-        result.append(r'%s'%c)
-    return result
+    return st.split(';')    
+
 def max_item(h):
     item = max(h.iteritems(), key=operator.itemgetter(1))
     return item
@@ -117,10 +120,10 @@ def solve(strinput):
     return lines[0]
 
 
-import sys
-test_cases = open(sys.argv[1], 'r')
-for test in test_cases:
-   test = test.strip()
-   test = r'%s'%test
-   print solve(test)
-test_cases.close()
+# import sys
+# test_cases = open(sys.argv[1], 'r')
+# for test in test_cases:
+#    test = test.strip()
+#    print solve(test)
+# test_cases.close()
+    

@@ -60,40 +60,14 @@ class Test(unittest.TestCase):
         print dv.max_item(d)
         pass
 
-    def test_remove_fromlist(self):
-        l = ['a','a','b','c','d']
-        ans = ['b','c','d']
-        print l
-        l = dv.remove_fromlist(l,'a')
-        print l
-        l = dv.remove_fromlist(l,'b')
-        print l
-        l.append('e')
-        print l
-
-##    def test_runonce(self):
-##        lines = dv.split_input(self.test2)
-##        d = dv.create_dict(lines)
-##        print d
-##        words,value = dv.max_item(d)
-##        print words,value
-##        nw = dv.combine(words[0],words[1],value)
-##        print nw
-##        print lines
-##        olen = len(lines)
-##        lines = dv.remove_fromlist(lines,words[0])
-##        print lines
-##        nlen = len(lines)
-##        assert olen == nlen+1
-    
     def test_solve(self):
-##        s = 'O draconia;conian devil! Oh la;h lame sa;saint!'
-##        ans = 'O draconian devil! Oh lame saint!'
-##        self.assetEqual( dv.solve(s), ans)
+       s = 'O draconia;conian devil! Oh la;h lame sa;saint!'
+       ans = 'O draconian devil! Oh lame saint!'
+       self.assertEqual( dv.solve(s), ans)
 
-        s2='m quaerat voluptatem.;pora incidunt ut labore et d;, consectetur, adipisci velit;olore magnam aliqua;idunt ut labore et dolore magn;uptatem.;i dolorem ipsum qu;iquam quaerat vol;psum quia dolor sit amet, consectetur, a;ia dolor sit amet, conse;squam est, qui do;Neque porro quisquam est, qu;aerat voluptatem.;m eius modi tem;Neque porro qui;, sed quia non numquam ei;lorem ipsum quia dolor sit amet;ctetur, adipisci velit, sed quia non numq;unt ut labore et dolore magnam aliquam qu;dipisci velit, sed quia non numqua;us modi tempora incid;Neque porro quisquam est, qui dolorem i;uam eius modi tem;pora inc;am al'
-        print dv.solve(s2)
-        pass
+       s2='m quaerat voluptatem.;pora incidunt ut labore et d;, consectetur, adipisci velit;olore magnam aliqua;idunt ut labore et dolore magn;uptatem.;i dolorem ipsum qu;iquam quaerat vol;psum quia dolor sit amet, consectetur, a;ia dolor sit amet, conse;squam est, qui do;Neque porro quisquam est, qu;aerat voluptatem.;m eius modi tem;Neque porro qui;, sed quia non numquam ei;lorem ipsum quia dolor sit amet;ctetur, adipisci velit, sed quia non numq;unt ut labore et dolore magnam aliquam qu;dipisci velit, sed quia non numqua;us modi tempora incid;Neque porro quisquam est, qui dolorem i;uam eius modi tem;pora inc;am al'
+       ans2 = 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'
+       self.assertEqual(dv.solve(s2),ans2)
 
 if __name__ == '__main__':
     unittest.main()

@@ -13,41 +13,13 @@ import sys
 global lookUp
 lookUp = {}
 primes = [2,3,5,7]
-global allperms
-allperms = []
 def isUgly(number):
-    global primes
     for p in primes:
         if number % p == 0:
             return True
     return False
-
-def permdriver(string):
-    #gets rid of leading zeros, except the first one
-    if string[0] == '0' and len(string)> 1:
-        string = '0'+str(int(string))
-    permute(string[0],string[1:])
-
-def permute(seen,remaining):
-    global allperms
-    if remaining == '':
-        allperms.append(seen)
-    else:
-        permute(seen+remaining[0],remaining[1:])
-        permute(seen+'+'+remaining[0],remaining[1:])
-        permute(seen+'-'+remaining[0],remaining[1:])
     
-def solve():
-    global allperms
-    numugly = 0
-    for perm in allperms:
-        line =  re.sub(r'\b0+(?!\b)', '', perm)
-        ans = eval(line)
-        if isUgly(ans):
-            numugly += 1
-    return numugly
-        
-
+    
 # this is correct, but too SLOWWW ========
 def func(seen, remaining):
     global numUgly
@@ -153,7 +125,7 @@ def merge(leftList,rightList):
                     lookUp[tmp3] = str(tmp3_eval)
                     result.append(tmp3)
 #    print result
-#    print tmp1,tmp2,tmp3,lookUp
+    print tmp1,tmp2,tmp3,lookUp
     return result
         
 def countUglie(uglyList):
@@ -168,13 +140,17 @@ def countUglie(uglyList):
     return result
 #        
 #test_cases = open("uglyInput.txt",'r')
-test_cases = open(sys.argv[1], 'r')
-for test in test_cases:
-    if test == '\n':
-        continue
-    allperms =[]
-    permdriver(test.strip())
-    ans =solve()
-    print test.strip(),ans
+##test_cases = open(sys.argv[1], 'r')
+#lookUp = {}
+#for test in test_cases:
+#    if test == '\n':
+#        continue
+#    test=test.strip()
+#    l = part(test)
+#    n = countUglie(l)
+#    print n
+#    print test
+#    func_driver(test)
+#    print numUgly
 
-test_cases.close()
+#test_cases.close()

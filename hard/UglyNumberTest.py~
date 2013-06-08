@@ -9,11 +9,8 @@ import timeit
 
 
 class Test(unittest.TestCase):
-    def test_permute(self):
-        print UglyNumbers.allperms
-        UglyNumbers.permdriver('0')
-        print UglyNumbers.allperms
-        print UglyNumbers.solve()
+
+
     def testIsUgly(self):
         assert UglyNumbers.isUgly(236)
         assert UglyNumbers.isUgly(14)
@@ -31,8 +28,8 @@ class Test(unittest.TestCase):
     
     def testPart(self):
         s='1234567890123'
-        #uglist=UglyNumbers.part(s)
-        #print UglyNumbers.countUglie(uglist)
+        uglist=UglyNumbers.part(s)
+        print UglyNumbers.countUglie(uglist)
 
 
 if __name__ == "__main__":

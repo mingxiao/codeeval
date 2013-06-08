@@ -6,7 +6,6 @@ def findall(s,f):
 def findfirst(s,f,idx):
     """
     Returns the first index of f in s where index >= idx
-    Returns None otherwise
     """
     a = findall(s,f)
     l = [x for x in a if x >= idx]
@@ -24,8 +23,7 @@ def available(used,start,end):
 
 def replace_atidx(s,f,r,idx):
     """
-    replaces string f with string r, at idx of
-    string s.y
+    replaces
     """
     return s[:idx]+r+s[idx+len(f):]
 

@@ -1,11 +1,13 @@
 import re
 import operator
 
-def findall_idx(s,pat):
-    """
-    Returns all start indices where substring pat appears in s, if at all
-    """
-    return [m.start() for m in re.finditer(pat,s)]
+def allindices(string, sub, offset=0):
+    listindex = []
+    i = string.find(sub, offset)
+    while i >= 0:
+        listindex.append(i)
+        i = string.find(sub, i + 1)
+    return listindex
 
 def reaches_end(s1,s2,pos):
     """
@@ -22,8 +24,9 @@ def overlap(s1,s2):
     Returns lenght of max overlap if we were to stitch s2 to the right of s1
     """
     #loop over s2 from left to right and check for overlap
+#    print 'OVERLAP',s1,s2
     for i in range(len(s2),0,-1):
-        idxs = findall_idx(s1,s2[:i])
+        idxs = allindices(s1,s2[:i])
         if len(idxs) == 0:
             continue
         mx = max(idxs)
@@ -38,28 +41,13 @@ def combine(s1,s2,pos):
     return s1[:-pos]+s2        
 
 def split_input(st):
-    return st.split(';')    
-
+    result = []
+    for c in st.split(';'):
+        result.append(r'%s'%c)
+    return result
 def max_item(h):
     item = max(h.iteritems(), key=operator.itemgetter(1))
     return item
-
-def remove(d,k1,k2):
-    """
-    In dictionary d, remove any key where key[0] equals k1 or key[1] equals k2
-    """
-    c = d.copy()
-    for key in d.iterkeys():
-        if key[0] == k1 or key[1] == k2:
-            del c[key]
-    return c
-
-def remove_fromlist(x,item):
-    """
-    should also remove items that are a substring of item
-    """
-    clist = list(x)
-    return filter(lambda a: a != item or not a in item, clist)
 
 def create_dict(lines):
     """
@@ -67,47 +55,72 @@ def create_dict(lines):
     for each pair of strings in lines
     """
     d = {}
+    maxsofar = {} # stores the max match so far for a word
     for s1 in lines:
+        maxoverlap = 0
+        match = ()
         for s2 in lines:
             if s1 == s2:
                 continue
             ov = overlap(s1,s2)
-            if ov >0:
-                d[(s1,s2)] = ov
+            if ov > maxoverlap:
+                maxoverlap = ov
+                match = (s1,s2)
+            #need smarter checking
+        if maxoverlap > 0:
+            d[match] = maxoverlap
     return d
 
 def solve(strinput):
     #split input to get separate strings
     lines = split_input(strinput)
-    oldlen = len(lines)
+    d = create_dict(lines)
     while len(lines) > 1:
-        print '=================='
-        d = create_dict(lines)
-        #print d
+        #print '=================='
+        #print 'DICT',d
         try:
             (words,value) = max_item(d)
+            #print "words",words
+            oldlen = len(lines)
             new_word = combine(words[0],words[1],value)
-            lines = remove_fromlist(lines,words[0])
-            lines = remove_fromlist(lines,words[1])
+            #print "NEW",new_word
+            #remove words that are substrings of the new word
+            to_rm = []
+            for elm in lines:
+                if elm in new_word:
+                    to_rm.append(elm)
+            for e in to_rm:
+                lines.remove(e)
+            #update the dictionary by inserting the best match for the new word
+            maxover = 0
+            best_match = ()
+            for elm in lines:
+                lap = overlap(elm, new_word)
+                if lap > maxover:
+                    maxover = lap
+                    best_match = (elm,new_word)
+            if maxover > 0:
+                d[best_match] = maxover
+                #print 'BEST',best_match
+            #remove the previous match from the dictionary
+            del d[(words)]
+            #remove elems in dict that contain words[0] or words[1]
+            elms_delete = []
+            for k in d:
+                if words[0] == k[0] or words[1] == k[1]:
+                    elms_delete.append(k)
+            for e in elms_delete:
+                del d[e]
             lines.append(new_word)
-        except ValueError:
-            """
-            Kind of a dinky hack, but if we get an error in max_items, then we know
-            there are no more matches, so choose the longest length string as our answer
-            """
-            return max(lines, key=len)
+        except:
+            raise Exception("dictionary empty")
     return lines[0]
 
 
 import sys
 test_cases = open(sys.argv[1], 'r')
 for test in test_cases:
-    test = test.strip()
-    print solve(test)
-    # ignore test if it is an empty line
-    # 'test' represents the test case, do something with it
-    # ...
-    # ...
-
+   test = test.strip()
+   test = r'%s'%test
+   print solve(test)
 test_cases.close()
-    

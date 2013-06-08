@@ -1,0 +1,11 @@
+import unittest
+import GridWalk as gw
+
+class Test(unittest.TestCase):
+    def test_score(self):
+        self.assertEqual(gw.score(59,79),30)
+        self.assertEqual(gw.score(-5,-7),12)
+    pass
+
+if __name__== '__main__':
+    unittest.main()

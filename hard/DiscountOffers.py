@@ -47,44 +47,83 @@ def parse_input(testcase):
     assert len(prods)>0
     return cust,prods
 
-def solve(cust,prods):
-    g = FlowNetwork()
-    g.add_vertex('s')
-    g.add_vertex('t')
-    map(g.add_vertex,cust)
-    map(g.add_vertex,prods)
-    #add source and sink
-    MAX = 10000000
-    for c in cust:
-        g.add_edge('s',c,MAX)
-    for p in prods:
-        g.add_edge(p,'t',MAX)
-    #add edges
-    for c in cust:
-        for p in prods:
-            s = score(p,c)
-            g.add_edge(c,p,s)
-            assert s > 0
-            print '{} -->{}: {}'.format(c,p,s)
-    #solve
-    print g.max_flow('s','t')
-    pass
-    
-class Edge(object):
-    def __init__(self, u, v, w):
+class Edge():
+    def __init__(self,u,v,w):
         self.source = u
         self.sink = v
         self.capacity = w
+        self.weight=w
+    
     def __repr__(self):
-        return "%s->%s:%s" % (self.source, self.sink, self.capacity)
- 
+        return '{}-->{}:{}'.format(self.source,self.sink,self.weight)
+
+class BipartiteGraph():
+    def __init__(self):
+        self.L = []
+        self.R = []
+        self.adg={}
+        self.edges = []
+        
+    def add_Lvertex(self,v):
+        self.L.append(v)
+        self.adg[v] = []
+        
+    def add_Rvertex(self,v):
+        self.R.append(v)
+        self.adg[v]=[]
+        
+    def add_edge(self,u,v,w):
+        assert u in self.L
+        assert v in self.R
+        e = Edge(u,v,w)
+        self.edges.append(e)
+        self.adg[u].append(e)
+        self.adg[v].append(e)
+        
+    def __repr__(self):
+        r = ""
+        for s in self.L:
+            for e in self.adg[s]:
+                r = r + repr(e) +'\n'
+        return r
+    
+    def _max_weight(self,v):
+        return max([e.weight for e in self.adg[v]])
+    
+    def _min_weight(self,v):
+        return min([e.weight for e in self.adg[v]])
+    
+    def reduce_min(self):
+        for v in self.L:
+            m = self._min_weight(v)
+            for k in self.adg[v]:
+                k.weight = k.weight -m
+                
+    def subgraph0(self):
+        fn = FlowNetwork()
+        fn.add_vertex('s')
+        fn.add_vertex('t')
+        for e in self.edges:
+            if e.weight == 0:
+                source = e.source
+                sink = e.sink
+                fn.add_vertex(source)
+                fn.add_vertex(sink)
+                fn.add_edge(source,sink,1)
+                fn.add_edge('s', source, 1)
+                fn.add_edge(sink, 't', 1)
+        print fn.max_flow('s','t')
+    
+    
 class FlowNetwork(object):
     def __init__(self):
+        self.V = []
         self.adj = {}
         self.flow = {}
  
     def add_vertex(self, vertex):
-        self.adj[vertex] = []
+        if vertex not in self.V:
+            self.adj[vertex] = []
  
     def get_edges(self, v):
         return self.adj[v]
@@ -120,6 +159,4 @@ class FlowNetwork(object):
                 self.flow[edge.redge] -= flow
             path = self.find_path(source, sink, [])
         return sum(self.flow[edge] for edge in self.get_edges(source))
-
-
 
