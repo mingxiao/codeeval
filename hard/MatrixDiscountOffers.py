@@ -33,56 +33,7 @@ def parse_input(testcase):
     prods = prods.split(',')
     assert len(cust) >0
     assert len(prods)>0
-    return cust,prods
-
-def reduce_row(m):
-    """
-    Reduce the rows by subtracting the minimum value of each row from that row.
-    """
-    copy = []
-    for row in m:
-        minelm = min(row)
-        copy.append([x -minelm for x in row])
-    return copy
-
-def reduce_col(m):
-    """
-    Reduce the columns by subtracting the minimum value of each column from that column.
-    """
-    c = reduce_row(zip(*m)) #reduce row of transpose
-    return zip(*c) #transpose back
-        
-def rcovered(m,r):
-    """
-    Return number of 0s covered in row r, and their coordinates
-    """
-    coor = []
-    num = 0
-    for idx,elm in enumerate(m[r]):
-        if elm == 0:
-            num += 1
-            coor.append((r,idx))
-    return num,coor
-    
-def ccovered(m,c):
-    temp = zip(*m)   
-    coor = []
-    num = 0
-    for idx,elm in enumerate(temp[c]):
-        if elm == 0:
-            num += 1
-            coor.append((idx,c))
-    return num,coor 
-        
-def min_cover(m):
-    ncovered ={} #maps from row/col --> number of 0s covered
-    place_covered = {} #maps from row/col --> list of coordinates
-    for i in range(len(m)):
-        rc,rxy = rcovered(m,i)
-        cc,cxy = ccovered(m,i)
-        ncovered['r%i'%rc]=rc
-        ncovered['c%i'%cc]=cc
-    print ncovered
+    return cust,prods        
     
 INF = 100000000000000000
 
@@ -136,13 +87,10 @@ def squareit(matrix):
     m = [row[:] for row in matrix]
     if len(m) != len(m[0]):
         minelem = min_elem(m)
-        print minelem
         if len(m) > len(m[0]):
             ndiff = len(m) - len(m[0])
-            print ndiff
             for row in m:
                 row += [minelem] * ndiff
-                print row
         else:
             ndiff = len(m[0]) - len(m)
             for i in range(ndiff):
@@ -156,9 +104,6 @@ def form_matrix(cust,prods):
         for p in prods:
             r.append(-1*score(p,c)) # multipy by -1 b/c we want the max
         m.append(r)
-    print m
-    #check for non-squareness
-    
     return m
 
 def ans(matrix,coors):
@@ -168,8 +113,14 @@ def ans(matrix,coors):
             result += matrix[c[0]][c[1]]
     return -1*result
 
+import sys
+test_cases = open(sys.argv[1], 'r')
+for test in test_cases:
+    test = test.strip()
+    cust,prod = parse_input(test)
+    m = form_matrix(cust,prod)
+    coors = hungarian(m)
+    result =ans(m,coors)
+    print '%.2f'%result
 
-"""
-Either hungarian() is buggy, or form_matrix() is buggy!
-We get correct answers from 2/3 test cases
-"""
+test_cases.close()
