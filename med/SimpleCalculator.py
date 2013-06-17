@@ -1,13 +1,25 @@
+"""
+ISSUE need to account for the unary - operator
+as in -(48)
+A unary operator is the first token or any operator that is preceded by another operator (not parentheses).
+"""
+
 import re
-
 #a lower number has HIGHER precedence
-PREC = {'+':5,'-':5,'*':4,'/':4,'^':3}
-
-ASSOC = {'^':"RIGHT",'*':"LEFT",'/':"LEFT",'+':'LEFT','-':'LEFT'}
+PREC = {'+':5,'-':5,'*':4,'/':4,'^':3, 'NEGATE':2}
+ASSOC = {'^':"RIGHT",'*':"LEFT",'/':"LEFT",'+':'LEFT','-':'LEFT','NEGATE':'RIGHT'}
 
 def get_tokens(expr_str):
     ops = '*\(\)+-^/'
-    return re.findall('[-]?\d+\.\d+|[-]?\d+|[%s]'%ops,expr_str)
+    tokens =  re.findall('\d+\.\d+|\d+|[%s]'%ops,expr_str)
+    # now differentiate between minus and negate
+    for i in range(len(tokens)):
+        if tokens[i] == '-':
+            if i == 0:
+                tokens[i] = 'NEGATE'
+            elif tokens[i-1] in PREC or tokens[i-1]=='(':
+                tokens[i] = 'NEGATE'
+    return tokens
 
 def prec(tok1,tok2):
     """
@@ -73,12 +85,10 @@ def eval_rpn(tokens):
             op2 = float(stack.pop())
             op1 = float(stack.pop())
             stack.append(op1-op2)
-            pass
         elif top == '*':
             op2 = float(stack.pop())
             op1 = float(stack.pop())
             stack.append(op1*op2)
-            pass
         elif top == '/':
             op2 = float(stack.pop())
             op1 = float(stack.pop())
@@ -87,17 +97,22 @@ def eval_rpn(tokens):
             op2 = float(stack.pop())
             op1 = float(stack.pop())
             stack.append(op1**op2)
+        elif top == 'NEGATE':
+            op = float(stack.pop())
+            stack.append(-1*op)
         else:
             #assume its a number and push it onto the stack
             stack.append(top)
+#    print 'STACK',stack
     assert len(stack) == 1
     return stack.pop()
 
 def truncate_float(fl):
+    fl = round(fl,5)
     if fl == int(fl):
         return int(fl)
     else:
-        return round(fl,5)
+        return fl
 
 import sys
 test_cases = open(sys.argv[1],'r')
