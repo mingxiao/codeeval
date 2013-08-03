@@ -1,0 +1,13 @@
+import unittest
+import otherugly as ugly
+
+class Test(unittest.TestCase):
+    def test_numop(self):
+        instr = '123'
+        opr = ugly.create_operations_array(len(instr)-1)
+        print opr
+    pass
+
+
+if __name__ == '__main__':
+    unittest.main()

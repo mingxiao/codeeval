@@ -1,0 +1,43 @@
+import re
+
+#a lower number has HIGHER precedence
+PREC = {'+':5,'-':5,'*':4,'/':4,'^':3,'(':1,')':1}
+
+ASSOC = {'^':"RIGHT",'*':"LEFT",'/':"LEFT",'+':'LEFT','-':'LEFT'}
+
+def get_tokens(expr_str):
+    ops = '*\(\)+-^/'
+    return re.findall('[-]?\d+\.\d+|[-]?\d+|[%s]'%ops,expr_str)
+
+def prec(tok1,tok2):
+    """
+    Returns True if tok1 has higher or equal precedence than tok
+    """
+    global PREC
+    assert tok1 in PREC
+    assert tok2 in PREC
+    return PREC[tok1] <= PREC[tok2]
+
+
+
+def shunting_yard(tokens):
+    global PREC
+    global ASSOC
+    output= []
+    opstack= []
+    while len(tokens) > 0:
+        ctoken = tokens.pop(0)
+        if ctoken in PREC:
+            #operator
+            if ctoken == '(':
+                pass
+            elif ctoken == ')':
+                pass
+            else:
+                pass
+            pass
+        else:
+            #so far, if its not an operator, then its a number
+            output.append(ctoken)
+            pass
+

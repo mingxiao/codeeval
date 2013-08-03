@@ -1,0 +1,9 @@
+import unittest
+import DoubleSquares as ds
+
+class Test(unittest.TestCase):
+    def test_double_squares(self):
+        ds.num_double_squares(10)
+
+if __name__=='__main__':
+    unittest.main()
